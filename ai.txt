@@ -1,0 +1,942 @@
+# PART X — CLAUDE CODE AGENTS AND SKILLS SETUP
+
+After the base repository, Python environment, dependencies, notebook, tests, and learning documentation have been created and validated, configure appropriate **Claude Code agents and skills** for this project.
+
+The goal is NOT to install as many agents/skills as possible.
+
+The goal is to create a small, high-quality Claude Code environment specifically suited for:
+
+```text
+Python
++
+Machine Learning
++
+Data exploration
++
+scikit-learn
++
+Testing
++
+ML education
++
+Code review
+```
+
+The project is educational, so agents and skills must help me **understand and implement ML**, not simply automate everything for me.
+
+---
+
+# 1. Research These Sources
+
+Inspect the current contents and documentation of:
+
+- https://www.skills.sh/
+- https://github.com/obra/superpowers
+
+Do not rely only on names, popularity, stars, or descriptions.
+
+Read the relevant documentation and actual skill definitions before deciding what to install.
+
+Because these projects can change over time, use their **current documentation at execution time** rather than assuming installation commands or available skills from memory.
+
+---
+
+# 2. Understand the Difference Between Skills and Agents
+
+Before installing anything, determine what should be:
+
+```text
+Skill
+vs
+Agent/Subagent
+vs
+Project instruction
+vs
+Normal Claude Code behavior
+```
+
+Use this mental model:
+
+```text
+SKILL
+
+Reusable knowledge/process
+for HOW to perform a task.
+
+Examples:
+
+How to debug systematically
+How to review Python code
+How to perform ML evaluation
+How to use scikit-learn correctly
+```
+
+versus:
+
+```text
+AGENT
+
+A specialized worker/persona
+responsible for a particular task.
+
+Examples:
+
+Python reviewer
+ML reviewer
+ML tutor
+```
+
+Do not create an agent when a skill is sufficient.
+
+Do not create a skill for simple instructions that belong in the project's normal Claude instructions.
+
+Avoid unnecessary agent complexity.
+
+---
+
+# 3. Evaluate Superpowers
+
+Inspect:
+
+https://github.com/obra/superpowers
+
+Determine whether its current Claude Code integration is appropriate for this project.
+
+Pay particular attention to capabilities related to:
+
+```text
+brainstorming
+planning
+test-driven development
+systematic debugging
+verification
+code review
+subagent workflows
+```
+
+If appropriate, install/configure Superpowers using the installation method recommended by its **current official documentation**.
+
+Do not invent installation commands.
+
+Do not manually copy random repository files if an official Claude Code installation mechanism exists.
+
+---
+
+# 4. Use Superpowers as Engineering Infrastructure
+
+Superpowers should primarily improve the **software-engineering workflow**.
+
+For example:
+
+```text
+New feature
+    ↓
+understand requirement
+    ↓
+plan
+    ↓
+implement small change
+    ↓
+test
+    ↓
+review
+    ↓
+verify
+```
+
+This is different from the ML learning workflow:
+
+```text
+Understand data
+    ↓
+form hypothesis
+    ↓
+build experiment
+    ↓
+train model
+    ↓
+evaluate
+    ↓
+analyze errors
+    ↓
+learn
+```
+
+Do not confuse the two.
+
+Superpowers can support the engineering process around the ML project, but it should not replace ML-specific reasoning.
+
+---
+
+# 5. Search Skills.sh
+
+Inspect:
+
+https://www.skills.sh/
+
+Search for skills relevant to this project.
+
+Prioritize categories such as:
+
+```text
+Python
+Python best practices
+
+Machine Learning
+ML engineering
+
+scikit-learn
+
+pandas
+NumPy
+
+data analysis
+data science
+
+Jupyter
+
+pytest
+testing
+
+code review
+
+documentation
+technical teaching
+```
+
+Search using multiple reasonable terms rather than relying on one query.
+
+---
+
+# 6. Evaluate Candidate Skills
+
+For every serious candidate, inspect the actual skill before installation.
+
+Evaluate:
+
+```text
+Relevance
+Is this directly useful for this project?
+
+Quality
+Does it contain concrete, correct instructions?
+
+Scope
+Is it focused or unnecessarily broad?
+
+Maintenance
+Does it appear reasonably maintained/current?
+
+Compatibility
+Does it work with Claude Code?
+
+Overlap
+Does Superpowers already provide the same capability?
+
+Complexity
+Will it make a beginner project harder to understand?
+
+Safety
+Does it request unnecessary commands, permissions, credentials, or external access?
+
+Educational value
+Will it help me learn rather than simply generate everything for me?
+```
+
+Do not install a skill just because it is highly ranked.
+
+---
+
+# 7. Prefer a Small Skill Set
+
+Target approximately:
+
+```text
+Superpowers
+
++
+
+1 strong Python skill
+
++
+
+1 strong ML/data-science skill
+
++
+
+optional specialized skill
+only when clearly justified
+```
+
+Do not install ten overlapping skills.
+
+A small coherent setup is preferable.
+
+For example, the final conceptual setup might look like:
+
+```text
+Claude Code
+│
+├── Superpowers
+│   ├── planning
+│   ├── TDD
+│   ├── debugging
+│   ├── verification
+│   └── code review workflow
+│
+├── Python Skill
+│   └── Python conventions / quality
+│
+├── ML Skill
+│   └── ML experiment correctness
+│
+└── Project Agents
+    ├── ML Tutor
+    └── ML Reviewer
+```
+
+This is only an example.
+
+Choose based on what actually exists and is high quality at execution time.
+
+---
+
+# 8. Avoid Redundant Skills
+
+Before installing a skill, ask:
+
+> Does an installed skill already solve this problem?
+
+For example, if Superpowers already provides strong:
+
+```text
+debugging
+TDD
+planning
+code review workflow
+verification
+```
+
+do not install additional skills providing essentially the same behavior unless there is a concrete advantage.
+
+Prefer:
+
+```text
+complementary capabilities
+```
+
+rather than:
+
+```text
+duplicated instructions
+```
+
+---
+
+# 9. Python Skill Requirements
+
+If selecting a Python skill, prefer one that encourages:
+
+- readable Python;
+- simple functions;
+- useful type hints;
+- pytest;
+- clear naming;
+- small modules;
+- standard Python conventions;
+- minimal abstraction;
+- dependency discipline;
+- understandable error handling.
+
+Avoid skills designed primarily around:
+
+- enterprise architecture;
+- Django;
+- FastAPI;
+- distributed systems;
+- async systems;
+- microservices;
+
+unless those become relevant later.
+
+This project currently needs **Python for ML**, not backend architecture.
+
+---
+
+# 10. ML Skill Requirements
+
+If selecting an ML/data-science skill, prefer one that emphasizes:
+
+```text
+understanding the dataset
+
+features vs target
+
+train/test separation
+
+baseline models
+
+correct evaluation
+
+data leakage prevention
+
+reproducibility
+
+model comparison
+
+overfitting
+
+generalization
+
+error analysis
+```
+
+Strong preference should be given to skills that encourage:
+
+```text
+baseline first
+↓
+simple model
+↓
+measure
+↓
+understand errors
+↓
+increase complexity only when justified
+```
+
+Avoid skills whose main philosophy is:
+
+```text
+try many advanced models
+↓
+hyperparameter tune everything
+↓
+maximize leaderboard score
+```
+
+That conflicts with this project's educational goal.
+
+---
+
+# 11. scikit-learn Awareness
+
+Any ML skill selected should work well with the project's chosen stack:
+
+```text
+pandas
+NumPy
+scikit-learn
+matplotlib
+Jupyter
+```
+
+It should not unnecessarily push the project toward:
+
+```text
+TensorFlow
+PyTorch
+XGBoost
+MLflow
+Spark
+distributed training
+GPU infrastructure
+```
+
+Those technologies are outside the current scope.
+
+---
+
+# 12. Create Project-Specific Agents Only Where Useful
+
+After reviewing available skills, decide whether project-specific Claude Code agents would materially improve the project.
+
+Do NOT create agents just because Claude Code supports agents.
+
+A useful minimal setup may include:
+
+```text
+ML Tutor
+ML Reviewer
+```
+
+Optionally:
+
+```text
+Python Reviewer
+```
+
+only if its responsibilities are sufficiently distinct from the ML Reviewer and installed skills.
+
+---
+
+# 13. ML Tutor Agent
+
+If appropriate, create a project-level **ML Tutor** agent.
+
+Its responsibility is:
+
+> Teach me ML while I implement this project.
+
+The ML Tutor should:
+
+- assume I am new to ML;
+- explain intuition before mathematics;
+- explain terminology when first used;
+- use California Housing examples;
+- connect new concepts to previous lessons;
+- ask checkpoint questions;
+- give small exercises;
+- explain code line by line when appropriate;
+- avoid implementing the entire next phase for me;
+- let me attempt important exercises myself;
+- review my explanation of concepts;
+- correct misunderstandings clearly.
+
+The tutor should prefer:
+
+```text
+Explain
+   ↓
+Show tiny example
+   ↓
+Ask me to predict outcome
+   ↓
+Let me implement
+   ↓
+Review
+```
+
+rather than:
+
+```text
+Generate complete solution
+```
+
+---
+
+# 14. ML Reviewer Agent
+
+If appropriate, create an **ML Reviewer** agent.
+
+Its responsibility is not normal Python style review.
+
+It should specifically look for ML mistakes such as:
+
+```text
+data leakage
+
+target leakage
+
+training on test data
+
+preprocessing before splitting
+
+incorrect metric interpretation
+
+comparing experiments on different splits
+
+missing baseline
+
+overfitting
+
+incorrect X/y construction
+
+using target-derived features
+
+poor reproducibility
+
+evaluating only training performance
+```
+
+When reviewing code, separate findings into:
+
+```text
+ML correctness
+
+Experiment design
+
+Evaluation
+
+Reproducibility
+
+Code quality
+```
+
+Prioritize conceptual ML correctness over style issues.
+
+---
+
+# 15. Python Reviewer Agent
+
+Only create a separate Python Reviewer if there is a clear benefit beyond existing skills/Superpowers.
+
+Its scope should be:
+
+```text
+Python readability
+typing
+function design
+module structure
+pytest
+naming
+simplicity
+```
+
+It should NOT redesign the repository into an enterprise architecture.
+
+For this project:
+
+```text
+simple > clever
+```
+
+---
+
+# 16. Agent Boundaries
+
+Keep responsibilities clear.
+
+For example:
+
+```text
+ML Tutor
+→ teaches concepts
+
+ML Reviewer
+→ checks ML correctness
+
+Python Reviewer
+→ checks Python quality
+
+Superpowers
+→ controls engineering workflow
+```
+
+Avoid agents that all review the same things.
+
+If two proposed agents substantially overlap, combine them.
+
+---
+
+# 17. Educational Safety Rule
+
+This is extremely important.
+
+Agents must NOT turn the project into:
+
+> AI writes everything and I watch.
+
+For important learning milestones such as:
+
+```text
+choosing X and y
+
+train/test split
+
+DummyRegressor
+
+calculating MAE
+
+Linear Regression
+
+interpreting coefficients
+
+comparing models
+
+understanding overfitting
+```
+
+prefer teaching and guided implementation.
+
+When possible:
+
+1. explain the concept;
+2. ask me what I think should happen;
+3. let me implement the small step;
+4. review my implementation;
+5. explain the result.
+
+Do not automatically race ahead through the roadmap.
+
+---
+
+# 18. Project-Level Installation
+
+Prefer project-local skills/configuration where practical so this repository remains reproducible and does not unexpectedly alter unrelated Claude Code projects.
+
+If Skills.sh currently recommends a command similar to:
+
+```text
+npx skills add <owner>/<repo>
+```
+
+verify the current official instructions before using it.
+
+Do not assume that example is still current.
+
+After installation, inspect what files were created.
+
+Do not commit generated files blindly.
+
+Determine which files belong in version control.
+
+---
+
+# 19. Security Review Before Installation
+
+Before installing third-party skills:
+
+1. inspect their repository/source;
+2. inspect their skill instructions;
+3. identify commands/scripts they may execute;
+4. check whether they request credentials or external services;
+5. check whether installation modifies global configuration;
+6. prefer project-local installation where reasonable;
+7. avoid unnecessary permissions.
+
+Do not execute suspicious installation scripts merely because a skill is popular.
+
+If a skill presents a meaningful security concern, do not install it.
+
+Explain the concern instead.
+
+---
+
+# 20. Create a Skills Decision Record
+
+Create:
+
+`docs/claude-skills.md`
+
+Document:
+
+```text
+# Claude Code Skills
+
+## Installed
+
+### <skill>
+Source:
+Purpose:
+Why selected:
+When it should be used:
+
+## Considered but not installed
+
+### <skill>
+Reason:
+- duplicate
+- too advanced
+- unrelated
+- low quality
+- unnecessary
+- security concern
+
+## Superpowers
+
+Installation method:
+Version/source:
+Relevant workflows:
+
+## Project Agents
+
+ML Tutor
+ML Reviewer
+...
+```
+
+This prevents future confusion about why something exists.
+
+---
+
+# 21. Update README
+
+Add a small section:
+
+```text
+## Claude Code Setup
+```
+
+Explain:
+
+- which plugin/skills are used;
+- which project agents exist;
+- what each one is for;
+- whether any setup command is required after cloning.
+
+Do not let this section overwhelm the ML documentation.
+
+---
+
+# 22. Validate Skills and Agents
+
+Do not stop after installation.
+
+Verify that Claude Code can actually discover the installed capabilities.
+
+Where possible, perform simple checks.
+
+For example:
+
+```text
+Python task
+→ relevant Python guidance available
+
+ML conceptual question
+→ ML Tutor behavior
+
+ML code review
+→ ML Reviewer checks leakage/evaluation
+
+bug
+→ systematic debugging workflow
+```
+
+Do not modify project code merely to test agents.
+
+---
+
+# 23. Do Not Over-Automate
+
+Do NOT configure:
+
+- autonomous model optimization;
+- automatic hyperparameter searches;
+- automatic feature generation;
+- autonomous multi-model competitions;
+- automatic model deployment;
+- autonomous dataset modification.
+
+This is a learning project.
+
+Automation should support learning, testing, review, and correctness.
+
+It should not remove the learning process.
+
+---
+
+# 24. Final Skills/Agents Report
+
+After setup, include in the final report:
+
+## Superpowers
+
+Explain:
+
+- whether it was installed;
+- installation method;
+- relevant workflows for this project.
+
+## Skills.sh Research
+
+Show the strongest candidates considered.
+
+Use a concise table:
+
+```text
+Skill | Purpose | Installed? | Reason
+```
+
+## Selected Skills
+
+Explain why each was selected.
+
+## Agents
+
+Show:
+
+```text
+Agent
+Purpose
+When to use
+```
+
+## Rejected Candidates
+
+Mention important candidates you deliberately did not install and why.
+
+## Verification
+
+Report how the setup was verified.
+
+## Recommended Workflow
+
+End with the workflow I should actually follow.
+
+For example:
+
+```text
+I want to learn the next ML concept
+        ↓
+ML Tutor
+        ↓
+understand concept
+        ↓
+I implement small exercise
+        ↓
+tests
+        ↓
+ML Reviewer
+        ↓
+fix conceptual problems
+        ↓
+Superpowers verification
+        ↓
+continue
+```
+
+Do not recommend invoking every agent for every trivial change.
+
+---
+
+# FINAL PRINCIPLE
+
+The Claude Code environment should optimize for:
+
+```text
+                LEARNING
+
+                   │
+          ┌────────┴────────┐
+          │                 │
+          ▼                 ▼
+    Engineering         ML Knowledge
+      Quality               │
+          │                 │
+          ▼                 ▼
+     Superpowers        ML Tutor
+     Python Skill       ML Skill
+     Testing            ML Reviewer
+          │                 │
+          └────────┬────────┘
+                   ▼
+              MY OWN CODE
+                   │
+                   ▼
+              UNDERSTANDING
+```
+
+The goal is NOT:
+
+> Install every useful Claude Code skill.
+
+The goal is:
+
+> Build the smallest, highest-quality Claude Code setup that helps me learn Python machine learning correctly.
+
+Research the current ecosystem first.
+
+Inspect before installing.
+
+Prefer project-local configuration.
+
+Avoid overlapping capabilities.
+
+Keep the final skill/agent set small.
+
+Document every choice.
+
+Verify the setup.
+
+Then return control to me so I can continue learning the project incrementally.

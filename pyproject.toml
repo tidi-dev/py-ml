@@ -1,0 +1,31 @@
+[project]
+name = "house-price"
+version = "0.1.0"
+description = "A beginner machine-learning project: predict California housing values while learning how ML works."
+readme = "README.md"
+requires-python = ">=3.10"
+# Only what the ML project itself needs at runtime.
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+# Tools for exploring (Jupyter) and checking (pytest) the project.
+# Install everything with:  pip install -e ".[dev]"
+dev = [
+    "jupyter>=1.1",
+    "pytest>=8.0",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

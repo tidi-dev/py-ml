@@ -1,0 +1,1189 @@
+You are a senior Python/ML engineer **and a patient machine-learning teacher** helping me learn ML from zero by building a House Price Prediction project incrementally.
+
+The complete project requirements and learning roadmap are in:
+
+`brief.txt`
+
+## Important context about me
+
+I am a beginner in machine learning.
+
+Assume:
+
+- I can program, but I do not understand ML yet.
+- I may not know ML terminology.
+- I do not have a statistics/data-science background.
+- Terms such as feature, target, training, inference, regression, loss, MAE, overfitting, generalization, pipeline, and cross-validation should NOT be assumed knowledge.
+- I want to understand **why ML works and what the code is doing**, not just copy scikit-learn code.
+- Explanations should be accessible enough that a non-technical person could understand the main idea.
+
+Teach intuition first.
+
+Use mathematics only after the intuitive idea is understood, and only when the mathematics provides real learning value.
+
+The goal is eventually for me to be able to explain:
+
+> What is happening when I give data to a machine-learning algorithm, train it, evaluate it, and ask it to predict something it has never seen before?
+
+---
+
+# PART A — ANALYZE THE PROJECT
+
+## Step 1 — Read the brief
+
+Read `brief.txt` completely before making changes.
+
+Treat it as the source of truth for:
+
+- project goals;
+- dataset;
+- ML problem;
+- technology choices;
+- learning progression;
+- scope;
+- exclusions;
+- implementation phases;
+- definition of success.
+
+Identify:
+
+1. the project objective;
+2. selected dataset;
+3. ML problem type;
+4. target;
+5. available features;
+6. initial feature subset;
+7. required libraries;
+8. learning progression;
+9. excluded technologies;
+10. minimum viable project;
+11. later phases that should not yet be implemented.
+
+Briefly summarize your understanding before implementation.
+
+Do not silently expand the scope.
+
+---
+
+# PART B — INSPECT THE REPOSITORY
+
+Before creating anything, inspect the existing repository.
+
+Determine:
+
+- existing files;
+- Python configuration;
+- package/dependency management;
+- `.gitignore`;
+- README;
+- notebooks;
+- source code;
+- tests;
+- existing documentation.
+
+Preserve useful existing work.
+
+Do not overwrite files unnecessarily.
+
+---
+
+# PART C — SET UP THE CODEBASE
+
+Create a small, beginner-friendly Python ML project.
+
+Use approximately:
+
+```text
+house-price-prediction/
+│
+├── notebooks/
+│   └── 01_exploration.ipynb
+│
+├── src/
+│   └── house_price/
+│       ├── __init__.py
+│       └── data.py
+│
+├── docs/
+│   ├── 00-ml-big-picture.md
+│   ├── 01-understanding-the-data.md
+│   ├── 02-features-and-target.md
+│   ├── 03-training-and-testing.md
+│   ├── 04-first-baseline-model.md
+│   ├── 05-linear-regression.md
+│   ├── 06-evaluating-a-model.md
+│   ├── 07-overfitting-and-generalization.md
+│   ├── 08-random-forest.md
+│   ├── 09-ml-workflow.md
+│   └── glossary.md
+│
+├── tests/
+│
+├── pyproject.toml
+├── .gitignore
+├── README.md
+└── brief.txt
+```
+
+Adjust only when there is a concrete reason.
+
+Do not create unnecessary architecture.
+
+---
+
+# PART D — DEPENDENCIES
+
+Use a modern Python setup.
+
+Prefer `pyproject.toml`.
+
+Use only dependencies justified by the project:
+
+```text
+pandas
+numpy
+scikit-learn
+matplotlib
+jupyter
+pytest
+```
+
+Do not add:
+
+- FastAPI;
+- Flask;
+- PostgreSQL;
+- SQLAlchemy;
+- Docker;
+- MLflow;
+- XGBoost;
+- TensorFlow;
+- PyTorch;
+- Airflow;
+- Spark;
+- cloud SDKs.
+
+The current project is about learning ML.
+
+---
+
+# PART E — DATASET FOUNDATION
+
+Use the California Housing dataset from scikit-learn:
+
+```python
+from sklearn.datasets import fetch_california_housing
+```
+
+Create a small reusable loader.
+
+For example:
+
+```python
+def load_housing_data():
+    ...
+```
+
+Keep it simple.
+
+Avoid:
+
+- repository patterns;
+- dependency injection;
+- factory classes;
+- data access layers;
+- unnecessary interfaces.
+
+Use clear type hints and concise documentation.
+
+---
+
+# PART F — FIRST NOTEBOOK
+
+Create:
+
+`notebooks/01_exploration.ipynb`
+
+Do NOT train an ML model yet.
+
+The notebook should teach me how to inspect the California Housing dataset.
+
+Cover:
+
+```python
+df.head()
+df.shape
+df.columns
+df.info()
+df.describe()
+df.isna().sum()
+```
+
+Explain what each command tells me.
+
+Document the meaning of:
+
+```text
+MedInc
+HouseAge
+AveRooms
+AveBedrms
+Population
+AveOccup
+Latitude
+Longitude
+MedHouseVal
+```
+
+Explain clearly:
+
+- each row represents a census block group;
+- it does not represent one individual house;
+- `MedHouseVal` is the target;
+- its unit is $100,000.
+
+Introduce:
+
+```python
+X = housing.data
+y = housing.target
+```
+
+but do NOT train anything yet.
+
+---
+
+# PART G — CREATE A BEGINNER ML COURSE INSIDE THE REPOSITORY
+
+After the codebase and dependencies are set up, create a structured tutorial under:
+
+`docs/`
+
+This is a major deliverable.
+
+The documentation should teach me ML from the beginning while using this project as the running example.
+
+The docs should NOT read like API documentation.
+
+They should read like a friendly beginner course.
+
+---
+
+# Teaching Style
+
+For every topic, follow roughly this pattern:
+
+```text
+1. What problem are we trying to solve?
+
+2. Explain the concept in plain English.
+
+3. Give a real-world analogy.
+
+4. Connect the analogy to house-price prediction.
+
+5. Show a tiny example.
+
+6. Introduce the ML terminology.
+
+7. Show a small amount of Python.
+
+8. Explain the Python line by line.
+
+9. Explain what happens internally at a high level.
+
+10. Show common beginner misunderstandings.
+
+11. Give me a small exercise.
+
+12. Give me questions I should be able to answer before continuing.
+```
+
+Do not begin sections with mathematical formulas.
+
+Use examples such as:
+
+```text
+House A:
+income = 5
+age = 20
+rooms = 5
+value = $250k
+
+House B:
+income = 8
+age = 10
+rooms = 7
+value = $450k
+```
+
+before introducing abstract notation.
+
+---
+
+# PART H — TUTORIAL 00: THE BIG PICTURE
+
+Create:
+
+`docs/00-ml-big-picture.md`
+
+This should answer:
+
+## What is machine learning?
+
+Explain it without jargon.
+
+For example, contrast normal programming:
+
+```text
+Rules written by programmer
+        +
+Input
+        ↓
+Program
+        ↓
+Answer
+```
+
+with supervised ML:
+
+```text
+Examples
++
+Correct answers
+        ↓
+Training algorithm
+        ↓
+Model
+```
+
+and later:
+
+```text
+New example
+     ↓
+trained model
+     ↓
+prediction
+```
+
+Explain what a **model** actually is.
+
+Make clear that the model is not:
+
+- a database of answers;
+- magic;
+- necessarily AI in the science-fiction sense.
+
+Explain that it learns patterns/relationships from examples.
+
+---
+
+# PART I — TUTORIAL 01: UNDERSTANDING DATA
+
+Create:
+
+`docs/01-understanding-the-data.md`
+
+Teach:
+
+- dataset;
+- row;
+- column;
+- observation;
+- numerical value;
+- sample;
+- distribution.
+
+Use California Housing examples.
+
+Explain what:
+
+```python
+df.head()
+df.shape
+df.info()
+df.describe()
+```
+
+actually tell us.
+
+Explain why understanding the dataset must happen before training.
+
+Include simple exercises.
+
+---
+
+# PART J — TUTORIAL 02: FEATURES AND TARGET
+
+Create:
+
+`docs/02-features-and-target.md`
+
+This is extremely important.
+
+Explain:
+
+```text
+X = features
+y = target
+```
+
+without assuming mathematical knowledge.
+
+Use an analogy such as:
+
+> Imagine someone gives you information about a house and asks you to guess its value.
+
+The information you receive is `X`.
+
+The correct answer you are trying to learn is `y`.
+
+Show:
+
+```text
+MedInc
+HouseAge
+AveRooms
+        ↓
+       X
+
+MedHouseVal
+        ↓
+       y
+```
+
+Explain why the model cannot use the target as an input.
+
+Introduce data leakage at a very basic level.
+
+---
+
+# PART K — TUTORIAL 03: TRAINING AND TESTING
+
+Create:
+
+`docs/03-training-and-testing.md`
+
+Explain what **training** means.
+
+Avoid saying merely:
+
+> fit the model.
+
+Explain conceptually what happens.
+
+Use an analogy such as practice questions and an exam:
+
+```text
+Practice questions
+      ↓
+Training
+
+Questions never seen before
+      ↓
+Test
+```
+
+Explain why evaluating using the same data used for training is misleading.
+
+Introduce:
+
+```text
+training set
+test set
+```
+
+Then explain:
+
+```python
+train_test_split(...)
+```
+
+line by line.
+
+Explain `random_state` without unnecessary mathematical detail.
+
+---
+
+# PART L — TUTORIAL 04: BASELINE MODEL
+
+Create:
+
+`docs/04-first-baseline-model.md`
+
+Explain why we need `DummyRegressor`.
+
+Use an analogy:
+
+> Before judging whether our smart prediction system is useful, compare it with someone who always guesses the average house value.
+
+Show conceptually:
+
+```text
+House A → $300k
+House B → $300k
+House C → $300k
+```
+
+Explain:
+
+> If our ML model cannot beat this simple strategy, our ML model isn't providing much value.
+
+Then introduce the scikit-learn code.
+
+Explain every important line.
+
+---
+
+# PART M — TUTORIAL 05: LINEAR REGRESSION
+
+Create:
+
+`docs/05-linear-regression.md`
+
+Explain Linear Regression intuitively.
+
+Start with ONE feature:
+
+```text
+Median Income → House Value
+```
+
+Explain the idea of finding a line representing the general relationship.
+
+Use simple ASCII diagrams if useful.
+
+For example:
+
+```text
+House Value
+    ↑
+    |             *
+    |          *
+    |       *
+    |    *
+    | *
+    +----------------→ Income
+```
+
+Then explain conceptually:
+
+```text
+prediction
+=
+starting point
++
+effect of income
++
+effect of house age
++
+effect of rooms
+...
+```
+
+Only after the intuition is clear should you optionally introduce:
+
+```text
+y = b0 + b1x1 + b2x2 + ...
+```
+
+Explain every symbol in plain language.
+
+Do not assume I understand algebra/statistics terminology.
+
+Explain:
+
+```python
+model.fit(...)
+model.predict(...)
+model.coef_
+model.intercept_
+```
+
+---
+
+# PART N — TUTORIAL 06: MODEL EVALUATION
+
+Create:
+
+`docs/06-evaluating-a-model.md`
+
+Teach:
+
+- prediction error;
+- MAE;
+- RMSE;
+- R².
+
+Start with actual predictions:
+
+```text
+Actual     Prediction     Error
+
+$300k      $280k          $20k
+$400k      $450k          $50k
+$200k      $210k          $10k
+```
+
+Then explain MAE.
+
+Show the arithmetic manually before showing scikit-learn.
+
+Explain RMSE intuitively:
+
+> Large mistakes hurt more.
+
+Explain R² only after MAE/RMSE are understood.
+
+Do not treat R² as "model accuracy."
+
+Explain why regression does not normally use an "accuracy percentage" like classification.
+
+---
+
+# PART O — TUTORIAL 07: OVERFITTING
+
+Create:
+
+`docs/07-overfitting-and-generalization.md`
+
+Explain overfitting with a human-learning analogy.
+
+For example:
+
+> A student memorizes answers to practice questions but cannot solve new questions.
+
+Connect this to:
+
+```text
+very low training error
++
+much higher test error
+```
+
+Explain:
+
+- training performance;
+- test performance;
+- generalization;
+- overfitting;
+- underfitting.
+
+Make clear that:
+
+> The goal is not to perform perfectly on training data.
+
+The goal is:
+
+> Perform well on new data.
+
+---
+
+# PART P — TUTORIAL 08: RANDOM FOREST
+
+Create:
+
+`docs/08-random-forest.md`
+
+Do not begin with implementation details.
+
+First explain why Linear Regression may be limited.
+
+Use examples of nonlinear relationships.
+
+Then explain a decision tree intuitively:
+
+```text
+Is MedInc > X?
+        │
+     yes/no
+        │
+        ▼
+another question
+```
+
+Then explain a forest:
+
+> Instead of trusting one decision tree, build many slightly different trees and combine their predictions.
+
+Only after that introduce `RandomForestRegressor`.
+
+Compare it with Linear Regression conceptually.
+
+---
+
+# PART Q — TUTORIAL 09: COMPLETE ML WORKFLOW
+
+Create:
+
+`docs/09-ml-workflow.md`
+
+Bring everything together:
+
+```text
+Problem
+   ↓
+Collect/select data
+   ↓
+Understand data
+   ↓
+Define X and y
+   ↓
+Split data
+   ↓
+Baseline
+   ↓
+Train
+   ↓
+Predict
+   ↓
+Evaluate
+   ↓
+Analyze errors
+   ↓
+Improve
+   ↓
+Evaluate again
+```
+
+Explain that ML is iterative.
+
+Emphasize:
+
+```text
+Change one thing
+      ↓
+Measure
+      ↓
+Compare
+      ↓
+Understand why
+```
+
+rather than randomly trying models.
+
+---
+
+# PART R — GLOSSARY
+
+Create:
+
+`docs/glossary.md`
+
+Maintain beginner-friendly definitions for terms including:
+
+```text
+machine learning
+supervised learning
+regression
+classification
+dataset
+sample
+observation
+feature
+target
+X
+y
+training
+model
+algorithm
+parameter
+prediction
+inference
+training set
+test set
+validation set
+baseline
+error
+MAE
+RMSE
+R²
+overfitting
+underfitting
+generalization
+data leakage
+preprocessing
+pipeline
+cross-validation
+hyperparameter
+```
+
+Each definition should be understandable without reading a textbook.
+
+Where useful include:
+
+```text
+Technical term:
+Feature
+
+Plain English:
+A piece of information we give the model to help it make a prediction.
+
+Project example:
+MedInc is a feature because median income is information the model can use to predict MedHouseVal.
+```
+
+---
+
+# PART S — DOCUMENTATION RULES
+
+All tutorial material must follow these rules.
+
+## Rule 1 — Plain language first
+
+Bad:
+
+> Minimize the empirical risk over the hypothesis space.
+
+Good:
+
+> The model adjusts itself so that its predictions are closer to the known answers in the training data.
+
+Technical terminology may be introduced afterward.
+
+---
+
+## Rule 2 — Explain WHY
+
+Do not write:
+
+```python
+model.fit(X_train, y_train)
+```
+
+and move on.
+
+Explain:
+
+```text
+X_train
+= information about the training examples
+
+y_train
+= correct answers for those examples
+
+fit()
+= ask the algorithm to learn relationships between them
+```
+
+---
+
+## Rule 3 — Explain shapes visually
+
+When useful, show:
+
+```text
+X
+
+20,640 rows
+×
+8 features
+```
+
+versus:
+
+```text
+y
+
+20,640 answers
+```
+
+Explain why there must be one target value for each observation.
+
+---
+
+## Rule 4 — Use concrete numbers
+
+Prefer:
+
+```text
+Actual price    = $300,000
+Prediction      = $270,000
+Error           = $30,000
+```
+
+over purely abstract notation.
+
+---
+
+## Rule 5 — Avoid unnecessary jargon
+
+When introducing a technical term:
+
+1. explain the idea;
+2. give an example;
+3. give the official term.
+
+For example:
+
+> We want the model to work on houses it did not see during training. This ability is called **generalization**.
+
+---
+
+## Rule 6 — Include "Common Mistakes"
+
+Each major tutorial should contain:
+
+```text
+Common beginner mistakes
+```
+
+Examples:
+
+- evaluating on training data;
+- confusing features and target;
+- thinking `fit()` stores exact answers;
+- assuming more features always improve the model;
+- assuming a lower training error means a better model;
+- comparing models using different test data;
+- accidentally leaking target information.
+
+---
+
+## Rule 7 — Include checkpoints
+
+End every tutorial with:
+
+```text
+Before continuing, I should be able to explain:
+```
+
+followed by approximately 3–6 questions.
+
+Example:
+
+```text
+□ What is a feature?
+
+□ What is the target?
+
+□ Why can't MedHouseVal be included inside X?
+
+□ Why do X and y have the same number of rows?
+```
+
+---
+
+## Rule 8 — Include small exercises
+
+Exercises should require me to think or write small pieces of code.
+
+Do not immediately give the full answer.
+
+Example:
+
+> Exercise: Print the shape of `X`. Before running the code, predict how many rows and columns you expect.
+
+Where appropriate, provide hints separately.
+
+---
+
+## Rule 9 — Connect topics together
+
+Frequently remind me how concepts connect.
+
+For example:
+
+```text
+Earlier:
+We separated X and y.
+
+Now:
+We split both X and y into training and testing portions.
+
+Next:
+We'll use X_train and y_train to train our first model.
+```
+
+The material should feel like one course rather than disconnected articles.
+
+---
+
+# PART T — README AS THE COURSE ENTRY POINT
+
+Update `README.md` so that it acts as the starting page.
+
+Include:
+
+```text
+Start Here
+```
+
+with the recommended order:
+
+```text
+1. Read docs/00-ml-big-picture.md
+
+2. Work through notebooks/01_exploration.ipynb
+
+3. Read docs/01-understanding-the-data.md
+
+4. Read docs/02-features-and-target.md
+
+5. Complete the exercises/checkpoints.
+
+6. Stop before model training until these concepts make sense.
+```
+
+Also include the future learning path:
+
+```text
+Understanding data
+      ↓
+Features / target
+      ↓
+Training / testing
+      ↓
+Baseline
+      ↓
+Linear Regression
+      ↓
+Evaluation
+      ↓
+Overfitting
+      ↓
+Random Forest
+      ↓
+Complete ML workflow
+```
+
+---
+
+# PART U — IMPORTANT: MATERIAL CAN COVER FUTURE TOPICS, CODE SHOULD NOT
+
+There is an important distinction:
+
+The **tutorial documentation may explain future ML concepts** such as:
+
+- train/test splitting;
+- DummyRegressor;
+- Linear Regression;
+- MAE;
+- RMSE;
+- R²;
+- overfitting;
+- Random Forest;
+- pipelines;
+- cross-validation.
+
+However, the actual project implementation should remain at the current learning phase.
+
+Do NOT prematurely implement the full modeling pipeline.
+
+The purpose of future tutorial chapters is to give me a roadmap and reference material.
+
+Implementation should progress only as I complete each learning milestone.
+
+---
+
+# PART V — VALIDATION
+
+After setup:
+
+1. install/resolve dependencies if possible;
+2. run tests;
+3. verify imports;
+4. verify California Housing loads;
+5. verify notebook imports;
+6. verify README commands;
+7. verify documentation links;
+8. check Markdown files for obvious broken internal links.
+
+Fix problems when possible.
+
+Do not claim something works unless it was actually verified where the environment permits verification.
+
+---
+
+# PART W — FINAL REPORT
+
+After finishing, report:
+
+## Project structure
+
+Show the important resulting tree.
+
+## What was created
+
+Summarize code, notebook, tests, and learning material.
+
+## Verification
+
+Tell me what you actually ran and whether it succeeded.
+
+## Learning path
+
+Tell me exactly where I should begin.
+
+For example:
+
+```text
+FIRST
+
+docs/00-ml-big-picture.md
+
+THEN
+
+notebooks/01_exploration.ipynb
+
+THEN
+
+docs/01-understanding-the-data.md
+
+THEN
+
+docs/02-features-and-target.md
+```
+
+## Stop point
+
+Tell me explicitly where I should stop before moving to model training.
+
+## First checkpoint
+
+Give me approximately five questions I should be able to answer before proceeding.
+
+Do NOT implement the next ML phase automatically.
+
+---
+
+# FINAL GUIDING PRINCIPLE
+
+This repository should serve two purposes:
+
+```text
+             PROJECT
+                │
+       ┌────────┴────────┐
+       │                 │
+       ▼                 ▼
+    CODEBASE         ML COURSE
+       │                 │
+       ▼                 ▼
+experiment with      understand
+real Python          what/why/how
+       │                 │
+       └────────┬────────┘
+                ▼
+          LEARN ML BY
+            BUILDING
+```
+
+The documentation is not secondary.
+
+**The learning material is a first-class deliverable of this project.**
+
+Optimize for understanding rather than speed.
+
+The goal is not:
+
+> "Claude built a machine-learning project for me."
+
+The goal is:
+
+> "I used this project to understand what machine learning is, how a model learns from examples, how training and prediction work, how we determine whether a model is useful, why models fail, and how to improve them systematically."
+
+Read `brief.txt` first, inspect the repository second, bootstrap the smallest useful codebase, create the beginner-friendly learning course, validate everything, and then stop before implementing the first training phase.
+
+After the base repository, Python environment, dependencies, notebook, tests, and learning documentation have been created and validated, configure appropriate Claude Code agents and skills for this project. Read `ai.txt`

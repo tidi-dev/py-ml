@@ -1,0 +1,1590 @@
+# House Price Prediction — Beginner Machine Learning Project
+
+## 1. Project Goal
+
+Build a beginner-friendly machine learning project in **Python** that predicts housing values using the **California Housing dataset provided by scikit-learn**.
+
+The primary goal is **learning machine learning fundamentals**, not building a production application or achieving the highest possible prediction score.
+
+The project should teach the complete supervised-learning workflow:
+
+```text
+Dataset
+   ↓
+Understand the data
+   ↓
+Define features (X) and target (y)
+   ↓
+Exploratory data analysis
+   ↓
+Train/test split
+   ↓
+Baseline model
+   ↓
+Linear Regression
+   ↓
+Prediction
+   ↓
+Evaluation
+   ↓
+Error analysis
+   ↓
+Better model
+   ↓
+Model comparison
+   ↓
+Reusable ML pipeline
+```
+
+The most important outcome is:
+
+> I understand why each stage exists and can apply the same workflow to another ML problem later.
+
+---
+
+# 2. Selected Dataset — California Housing
+
+Use scikit-learn's **California Housing dataset**:
+
+```python
+from sklearn.datasets import fetch_california_housing
+
+housing = fetch_california_housing(as_frame=True)
+df = housing.frame
+```
+
+The dataset contains approximately:
+
+```text
+20,640 observations
+8 input features
+1 regression target
+```
+
+The input features are:
+
+| Feature | Meaning |
+|---|---|
+| `MedInc` | Median income |
+| `HouseAge` | Median house age |
+| `AveRooms` | Average rooms per household |
+| `AveBedrms` | Average bedrooms per household |
+| `Population` | Block-group population |
+| `AveOccup` | Average household occupancy |
+| `Latitude` | Latitude |
+| `Longitude` | Longitude |
+
+Target:
+
+```text
+MedHouseVal
+```
+
+The target represents median house value in units of **$100,000**.
+
+For example:
+
+```text
+MedHouseVal = 2.5
+
+≈ $250,000
+```
+
+## Important Dataset Interpretation
+
+Each row does **not** represent an individual house.
+
+Each row represents a California **census block group**.
+
+Therefore the project is more accurately:
+
+> Predict the median housing value of a California census block group from demographic, geographic, and housing characteristics.
+
+We may still refer to the project informally as "House Price Prediction", but this distinction should remain clear.
+
+---
+
+# 3. Why This Dataset
+
+Use California Housing for the first project because it removes unnecessary data-engineering complexity.
+
+Advantages:
+
+- built directly into scikit-learn;
+- relatively small and fast to train;
+- 20,640 observations;
+- only 8 features;
+- all initial features are numerical;
+- no complex scraping/API required;
+- suitable for regression;
+- easy to load directly into pandas;
+- large enough to demonstrate train/test evaluation;
+- useful geographic features;
+- suitable for comparing simple and nonlinear models.
+
+This allows the project to focus on:
+
+```text
+ML concepts
+```
+
+instead of:
+
+```text
+data acquisition
+APIs
+scraping
+database design
+data-source integration
+```
+
+---
+
+# 4. Dataset Usage Note
+
+The dataset originates from California housing information derived from the 1990 U.S. Census and was distributed through StatLib.
+
+scikit-learn provides a built-in loader for the dataset.
+
+However, do not claim that the underlying dataset is CC0, CC BY, or another specific modern open-data license unless authoritative documentation establishes that.
+
+For this project, treat it as a standard educational ML dataset distributed through scikit-learn.
+
+If the project later requires explicit redistribution/commercial licensing guarantees, investigate the original dataset rights separately or move to a dataset with an explicit open-data license.
+
+---
+
+# 5. Main Learning Objectives
+
+By completing this project, understand:
+
+### ML fundamentals
+
+- machine learning;
+- supervised learning;
+- regression;
+- features;
+- targets;
+- training;
+- prediction;
+- generalization.
+
+### Data fundamentals
+
+- rows and columns;
+- DataFrames;
+- numerical features;
+- distributions;
+- correlations;
+- outliers.
+
+### Model development
+
+- train/test splitting;
+- baselines;
+- Linear Regression;
+- Random Forest;
+- model comparison.
+
+### Evaluation
+
+- MAE;
+- RMSE;
+- R²;
+- training vs test error;
+- residuals;
+- error analysis.
+
+### ML engineering
+
+- reproducibility;
+- preprocessing;
+- pipelines;
+- data leakage;
+- saving trained models;
+- separating exploration from reusable code.
+
+Explain concepts using software-engineering intuition first.
+
+Introduce mathematical details gradually when they help explain model behavior.
+
+---
+
+# 6. Technology Stack
+
+Keep the initial stack deliberately small:
+
+```text
+Python
+pandas
+NumPy
+scikit-learn
+matplotlib
+Jupyter
+```
+
+## Python
+
+Primary programming language.
+
+## pandas
+
+Use for:
+
+```text
+loading data
+inspection
+filtering
+statistics
+feature selection
+DataFrame manipulation
+```
+
+## NumPy
+
+Use for numerical operations when needed.
+
+Do not use NumPy merely for the sake of using it.
+
+## scikit-learn
+
+Use for:
+
+```text
+dataset loading
+train/test splitting
+baseline models
+Linear Regression
+Random Forest
+pipelines
+metrics
+cross-validation later
+```
+
+## matplotlib
+
+Use for visualization.
+
+Examples:
+
+```text
+target distribution
+income vs housing value
+house age vs housing value
+geographic distribution
+actual vs predicted
+residual distribution
+```
+
+## Jupyter
+
+Use for exploration and experimentation.
+
+Stable logic should eventually move into normal Python modules.
+
+---
+
+# 7. Explicitly Out of Scope for V1
+
+Do NOT initially use:
+
+```text
+FastAPI
+Flask
+PostgreSQL
+SQLAlchemy
+Alembic
+
+Docker
+Kubernetes
+
+AWS
+GCP
+Azure
+
+Airflow
+Prefect
+Spark
+Kafka
+
+MLflow
+
+TensorFlow
+PyTorch
+neural networks
+
+frontend frameworks
+microservices
+```
+
+The first goal is not deployment.
+
+The first goal is:
+
+> Correctly train, evaluate, understand, and improve a machine-learning model.
+
+---
+
+# 8. Understand the ML Problem
+
+This project is **supervised regression**.
+
+We have historical observations where both the input information and correct target are known.
+
+Conceptually:
+
+```text
+INPUT FEATURES (X)
+
+MedInc
+HouseAge
+AveRooms
+AveBedrms
+Population
+AveOccup
+Latitude
+Longitude
+
+        ↓
+
+Machine Learning Model
+
+        ↓
+
+TARGET (y)
+
+MedHouseVal
+```
+
+The model learns relationships between `X` and `y`.
+
+Later we provide new `X` values:
+
+```text
+X_new
+   ↓
+trained model
+   ↓
+predicted MedHouseVal
+```
+
+Explain why this is **regression** rather than classification.
+
+---
+
+# 9. Understand X and y
+
+Use scikit-learn's dataset structure:
+
+```python
+housing = fetch_california_housing(as_frame=True)
+
+X = housing.data
+y = housing.target
+```
+
+Alternatively:
+
+```python
+df = housing.frame
+
+X = df.drop(columns=["MedHouseVal"])
+y = df["MedHouseVal"]
+```
+
+Teach the conceptual distinction:
+
+```text
+X = information provided TO the model
+
+y = answer the model is trying to learn
+```
+
+For this dataset:
+
+```text
+X
+├── MedInc
+├── HouseAge
+├── AveRooms
+├── AveBedrms
+├── Population
+├── AveOccup
+├── Latitude
+└── Longitude
+
+↓
+
+model
+
+↓
+
+y
+└── MedHouseVal
+```
+
+Understanding `X` and `y` is a core learning objective.
+
+---
+
+# 10. Phase 1 — Load and Understand the Dataset
+
+Do not train anything immediately.
+
+Start with:
+
+```python
+from sklearn.datasets import fetch_california_housing
+
+housing = fetch_california_housing(as_frame=True)
+df = housing.frame
+```
+
+Then inspect:
+
+```python
+df.head()
+```
+
+```python
+df.shape
+```
+
+```python
+df.columns
+```
+
+```python
+df.info()
+```
+
+```python
+df.describe()
+```
+
+```python
+df.isna().sum()
+```
+
+Questions to answer:
+
+1. How many rows exist?
+2. How many features exist?
+3. What does one row represent?
+4. What does each column represent?
+5. What is the target?
+6. What units does the target use?
+7. What are the minimum and maximum values?
+8. Are there missing values?
+9. Are there suspicious extreme values?
+10. Which features might logically influence housing value?
+
+### Definition of done
+
+I can explain every column and what one dataset row represents.
+
+---
+
+# 11. Phase 2 — Exploratory Data Analysis
+
+Before modeling, explore the target.
+
+For example:
+
+```python
+df["MedHouseVal"].describe()
+```
+
+Plot its distribution:
+
+```python
+import matplotlib.pyplot as plt
+
+df["MedHouseVal"].hist(bins=50)
+plt.xlabel("Median House Value")
+plt.ylabel("Count")
+plt.show()
+```
+
+Then investigate relationships such as:
+
+```text
+MedInc → MedHouseVal
+
+HouseAge → MedHouseVal
+
+AveRooms → MedHouseVal
+
+Latitude/Longitude → MedHouseVal
+```
+
+Do not create dozens of charts.
+
+The objective is to answer:
+
+> What patterns exist in the data that might help predict housing value?
+
+Also inspect suspicious outliers in:
+
+```text
+AveRooms
+AveBedrms
+AveOccup
+Population
+```
+
+### Definition of done
+
+I understand the major distributions and have hypotheses about which features may be useful.
+
+---
+
+# 12. Phase 3 — Start With Fewer Features
+
+Although the dataset contains only 8 features, do not necessarily use everything immediately.
+
+Start with something understandable such as:
+
+```python
+features = [
+    "MedInc",
+    "HouseAge",
+    "AveRooms",
+]
+
+X = df[features]
+y = df["MedHouseVal"]
+```
+
+This allows the first model to answer:
+
+> Can income, house age, and average rooms explain some variation in housing value?
+
+Then later compare against using all 8 features.
+
+This creates a useful experiment:
+
+```text
+Simple model
+3 features
+
+vs
+
+Same model
+8 features
+```
+
+Ask:
+
+> Did adding more information actually improve prediction?
+
+---
+
+# 13. Phase 4 — Train/Test Split
+
+Separate data used for learning from data used for evaluation.
+
+Start with:
+
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+)
+```
+
+Conceptually:
+
+```text
+20,640 observations
+        │
+        ├───────────────┐
+        │               │
+       80%             20%
+        │               │
+        ▼               ▼
+     TRAIN             TEST
+        │
+        ▼
+    model.fit()
+
+                        │
+                        ▼
+                  model.predict()
+                        │
+                        ▼
+                    evaluate
+```
+
+Learn:
+
+- why splitting is necessary;
+- why testing on training data is misleading;
+- what `test_size` means;
+- what `random_state` means;
+- what generalization means.
+
+### Definition of done
+
+I can explain why training and testing require separate data.
+
+---
+
+# 14. Phase 5 — Establish a Baseline
+
+Before Linear Regression, use:
+
+```python
+from sklearn.dummy import DummyRegressor
+```
+
+For example:
+
+```python
+baseline = DummyRegressor(strategy="mean")
+
+baseline.fit(X_train, y_train)
+
+baseline_predictions = baseline.predict(X_test)
+```
+
+The baseline intentionally ignores useful relationships.
+
+Conceptually:
+
+```text
+House/Area A → approximately same prediction
+House/Area B → approximately same prediction
+House/Area C → approximately same prediction
+```
+
+Its purpose is to answer:
+
+> How well could we perform without actually learning meaningful relationships?
+
+Every real model should beat this baseline.
+
+### Definition of done
+
+I understand why a model score is meaningless without something simple to compare against.
+
+---
+
+# 15. Phase 6 — MAE
+
+Start evaluation with **Mean Absolute Error**.
+
+```python
+from sklearn.metrics import mean_absolute_error
+
+mae = mean_absolute_error(
+    y_test,
+    baseline_predictions,
+)
+```
+
+Remember that the target uses units of `$100,000`.
+
+If:
+
+```text
+MAE = 0.40
+```
+
+that corresponds approximately to:
+
+```text
+$40,000
+```
+
+because:
+
+```text
+0.40 × $100,000 = $40,000
+```
+
+Make this conversion explicit when reporting results.
+
+### Definition of done
+
+I can explain MAE in plain English.
+
+---
+
+# 16. Phase 7 — Linear Regression
+
+Train the first real model:
+
+```python
+from sklearn.linear_model import LinearRegression
+
+model = LinearRegression()
+
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+```
+
+Understand these two operations deeply:
+
+```text
+fit()
+```
+
+means:
+
+> Learn model parameters from training examples.
+
+```text
+predict()
+```
+
+means:
+
+> Apply the learned relationship to unseen feature values.
+
+Do not treat these as magic library calls.
+
+Investigate:
+
+```python
+model.coef_
+model.intercept_
+```
+
+and understand conceptually what coefficients mean.
+
+### Definition of done
+
+I understand the basic relationship between features, learned parameters, and predictions.
+
+---
+
+# 17. Phase 8 — Evaluation Metrics
+
+Evaluate using:
+
+```text
+MAE
+RMSE
+R²
+```
+
+## MAE
+
+Primary beginner-friendly metric.
+
+Interpret in approximate dollars.
+
+## RMSE
+
+Penalizes large errors more strongly than MAE.
+
+Compare:
+
+```text
+MAE
+vs
+RMSE
+```
+
+If RMSE is significantly larger, investigate whether some predictions have very large errors.
+
+## R²
+
+Use as an additional model-quality measure.
+
+Understand what it means, but do not use R² as the only evaluation metric.
+
+Create:
+
+| Model | Features | MAE | RMSE | R² |
+|---|---|---:|---:|---:|
+| Dummy | 3 | | | |
+| Linear Regression | 3 | | | |
+
+### Definition of done
+
+I can explain what each metric tells me and why multiple metrics can be useful.
+
+---
+
+# 18. Phase 9 — Inspect Predictions
+
+Do not stop at metrics.
+
+Create something conceptually like:
+
+```text
+Actual     Predicted     Error
+2.50       2.31          -0.19
+4.10       3.72          -0.38
+1.80       2.03          +0.23
+```
+
+Then convert values mentally or programmatically to dollars.
+
+Investigate:
+
+- good predictions;
+- moderate errors;
+- largest errors.
+
+Ask:
+
+> What kinds of observations are difficult for the model?
+
+---
+
+# 19. Phase 10 — Actual vs Predicted
+
+Plot:
+
+```text
+Actual MedHouseVal
+vs
+Predicted MedHouseVal
+```
+
+Conceptually:
+
+```text
+Predicted
+    ↑
+    │                •
+    │             •
+    │          •
+    │       •
+    │    •
+    │ •
+    └──────────────────→ Actual
+```
+
+The closer observations are to the ideal diagonal, the closer predictions are to actual values.
+
+Also examine residuals:
+
+```text
+residual = actual - predicted
+```
+
+Look for systematic patterns.
+
+---
+
+# 20. Phase 11 — Use All Features
+
+After understanding the small-feature model, use all 8 features:
+
+```python
+X = housing.data
+y = housing.target
+```
+
+Repeat:
+
+```text
+split
+↓
+baseline
+↓
+Linear Regression
+↓
+evaluation
+```
+
+Compare:
+
+| Model | Feature Count | MAE | RMSE | R² |
+|---|---:|---:|---:|---:|
+| Linear Regression | 3 | | | |
+| Linear Regression | 8 | | | |
+
+Ask:
+
+> Did additional features improve the model?
+
+Do not assume more features automatically mean better predictions.
+
+---
+
+# 21. Phase 12 — Random Forest
+
+Once Linear Regression is understood, introduce:
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+```
+
+Conceptually explain that Linear Regression learns relationships of a relatively restricted form, whereas tree-based models can capture more complicated nonlinear interactions.
+
+Train:
+
+```python
+model = RandomForestRegressor(
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+```
+
+Compare:
+
+```text
+DummyRegressor
+        ↓
+LinearRegression
+        ↓
+RandomForestRegressor
+```
+
+Use a table:
+
+| Model | Train MAE | Test MAE | RMSE | R² |
+|---|---:|---:|---:|---:|
+| Dummy | | | | |
+| Linear Regression | | | | |
+| Random Forest | | | | |
+
+### Definition of done
+
+I understand that different algorithms represent relationships differently and must be evaluated empirically.
+
+---
+
+# 22. Phase 13 — Overfitting
+
+Calculate performance separately on:
+
+```text
+training data
+```
+
+and:
+
+```text
+test data
+```
+
+Example:
+
+```text
+Train MAE = 0.08
+Test MAE  = 0.35
+```
+
+The large gap may indicate overfitting.
+
+Explain overfitting as:
+
+> The model has learned the training data extremely well but does not generalize equally well to unseen examples.
+
+Also explain underfitting.
+
+Compare Linear Regression and Random Forest.
+
+Ask:
+
+> Does the more powerful model improve test performance enough to justify its additional complexity?
+
+---
+
+# 23. Phase 14 — Geographic Features
+
+California Housing contains:
+
+```text
+Latitude
+Longitude
+```
+
+These create an interesting experiment.
+
+Compare:
+
+```text
+Model without Latitude/Longitude
+```
+
+against:
+
+```text
+Model with Latitude/Longitude
+```
+
+Visualize:
+
+```text
+Longitude
+Latitude
+MedHouseVal
+```
+
+and investigate geographic patterns.
+
+This is a useful demonstration that **location matters strongly in housing markets**.
+
+Do not immediately replace coordinates with external geographic APIs or complex geospatial tooling.
+
+Keep the experiment within the existing dataset.
+
+---
+
+# 24. Phase 15 — Data Leakage
+
+Learn the general rule:
+
+> A feature should contain only information that would actually be available when making the prediction.
+
+California Housing is relatively simple, so obvious leakage may not be present.
+
+Still understand hypothetical examples.
+
+If predicting house value, features such as:
+
+```text
+final_sale_price
+price_per_square_foot_calculated_from_sale_price
+post_sale_tax_assessment
+```
+
+could reveal the target directly or indirectly.
+
+This concept will become extremely important in future projects.
+
+---
+
+# 25. Phase 16 — Pipeline
+
+After understanding models independently, introduce:
+
+```python
+from sklearn.pipeline import Pipeline
+```
+
+For California Housing, preprocessing requirements are relatively small because all initial features are numerical.
+
+The pipeline might initially be simple:
+
+```text
+Raw features
+     ↓
+Optional preprocessing
+     ↓
+Model
+     ↓
+Prediction
+```
+
+Do not create complicated preprocessing merely to demonstrate `Pipeline`.
+
+Understand its real benefits:
+
+- reproducibility;
+- consistent preprocessing;
+- preventing leakage;
+- easier evaluation;
+- easier model saving;
+- easier deployment later.
+
+---
+
+# 26. Missing Values and Categorical Features
+
+California Housing does not provide the best environment for learning these topics because its standard features are numerical and the dataset is relatively clean.
+
+Therefore:
+
+**Do not artificially create complexity just to practice these techniques.**
+
+After completing the core project, use a second richer dataset to learn:
+
+```text
+missing values
+categorical features
+SimpleImputer
+OneHotEncoder
+ColumnTransformer
+```
+
+A future project such as customer churn can teach these concepts more naturally.
+
+---
+
+# 27. Feature Engineering
+
+Experiment only after the baseline models work.
+
+Potential experiments could include ratios or geographic transformations where there is a clear hypothesis.
+
+For every engineered feature, ask:
+
+```text
+Why might this contain predictive information?
+
+Would this information actually be available at prediction time?
+
+Did validation/test performance improve?
+```
+
+Do not automatically generate dozens of features.
+
+---
+
+# 28. Model Improvement Process
+
+Follow a disciplined loop:
+
+```text
+Baseline
+   ↓
+Measure
+   ↓
+Form hypothesis
+   ↓
+Make ONE meaningful change
+   ↓
+Measure again
+   ↓
+Compare
+```
+
+Example:
+
+```text
+Dummy
+MAE = X
+
+↓
+
+Linear Regression
+MAE = Y
+
+↓
+
+Add all features
+MAE = Z
+
+↓
+
+Random Forest
+MAE = A
+
+↓
+
+Investigate overfitting
+```
+
+Keep a simple experiment table:
+
+| Experiment | Model | Features | Train MAE | Test MAE | Notes |
+|---|---|---|---:|---:|---|
+| 1 | Dummy | 3 | | | baseline |
+| 2 | Linear | 3 | | | |
+| 3 | Linear | 8 | | | |
+| 4 | Random Forest | 8 | | | |
+
+The important questions are:
+
+> What changed?
+
+> Why did I change it?
+
+> Did it actually improve generalization?
+
+---
+
+# 29. Cross-Validation — Later
+
+After train/test splitting is fully understood, introduce cross-validation.
+
+Do not introduce it immediately.
+
+First understand:
+
+```text
+train
+vs
+test
+```
+
+Then learn why a single train/test split can depend somewhat on which observations happened to land in each set.
+
+Introduce:
+
+```python
+cross_val_score
+```
+
+and eventually:
+
+```text
+K-fold cross-validation
+```
+
+Keep the final test set conceptually separate from model selection when the project becomes more rigorous.
+
+---
+
+# 30. Project Structure
+
+Start extremely small:
+
+```text
+house-price-prediction/
+│
+├── notebooks/
+│   └── 01_exploration.ipynb
+│
+├── README.md
+└── requirements.txt
+```
+
+Then evolve into:
+
+```text
+house-price-prediction/
+│
+├── notebooks/
+│   ├── 01_exploration.ipynb
+│   └── 02_modeling.ipynb
+│
+├── src/
+│   ├── data.py
+│   ├── train.py
+│   ├── evaluate.py
+│   └── predict.py
+│
+├── models/
+│
+├── tests/
+│
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+Because the dataset can be fetched through scikit-learn, a committed raw dataset may not initially be necessary.
+
+---
+
+# 31. Learning Roadmap
+
+Follow this order:
+
+```text
+LEVEL 1 — DATA
+
+fetch_california_housing()
+        ↓
+DataFrame
+        ↓
+head()
+info()
+describe()
+        ↓
+understand columns
+
+
+LEVEL 2 — FIRST ML
+
+X / y
+   ↓
+train_test_split
+   ↓
+DummyRegressor
+   ↓
+MAE
+
+
+LEVEL 3 — REAL MODEL
+
+LinearRegression
+      ↓
+fit()
+      ↓
+predict()
+      ↓
+MAE / RMSE / R²
+      ↓
+inspect errors
+
+
+LEVEL 4 — BETTER MODEL
+
+RandomForestRegressor
+      ↓
+train vs test error
+      ↓
+overfitting
+      ↓
+model comparison
+
+
+LEVEL 5 — BETTER EXPERIMENTS
+
+3 features vs 8 features
+      ↓
+with/without geographic features
+      ↓
+cross-validation
+      ↓
+basic feature engineering
+
+
+LEVEL 6 — ML ENGINEERING
+
+Pipeline
+   ↓
+move notebook logic into src/
+   ↓
+tests
+   ↓
+save model
+
+
+LEVEL 7 — OPTIONAL APPLICATION
+
+joblib
+   ↓
+FastAPI
+   ↓
+prediction endpoint
+   ↓
+Docker
+```
+
+Do not jump to Level 7 early.
+
+---
+
+# 32. Minimum Viable Project
+
+The first version should contain only:
+
+```text
+California Housing
+       ↓
+pandas exploration
+       ↓
+3 features
+       ↓
+X / y
+       ↓
+80/20 train-test split
+       ↓
+DummyRegressor
+       ↓
+MAE
+       ↓
+LinearRegression
+       ↓
+MAE
+       ↓
+compare
+```
+
+That is enough for the first milestone.
+
+Do not add Random Forest until this workflow makes sense.
+
+---
+
+# 33. First Concrete Exercise
+
+Start with only:
+
+```python
+from sklearn.datasets import fetch_california_housing
+
+housing = fetch_california_housing(as_frame=True)
+
+df = housing.frame
+```
+
+Then answer:
+
+```text
+1. What type is `housing`?
+
+2. What type is `housing.data`?
+
+3. What type is `housing.target`?
+
+4. What is `df.shape`?
+
+5. What are the column names?
+
+6. What does one row represent?
+
+7. Which column is y?
+
+8. Which columns could be X?
+
+9. What unit is MedHouseVal measured in?
+
+10. Are there missing values?
+```
+
+Do **not train a model yet**.
+
+Understanding the data is the first milestone.
+
+---
+
+# 34. Definition of Success
+
+At the end of the project, I should be able to explain:
+
+1. What supervised learning is.
+2. Why this is regression.
+3. What `X` means.
+4. What `y` means.
+5. What training means.
+6. What `fit()` does conceptually.
+7. What `predict()` does.
+8. Why train/test splitting exists.
+9. What a baseline is.
+10. What MAE means.
+11. What RMSE means.
+12. What R² means.
+13. What generalization means.
+14. What overfitting means.
+15. What underfitting means.
+16. What data leakage means.
+17. Why Random Forest can model relationships Linear Regression cannot.
+18. Why a lower training error does not necessarily mean a better model.
+19. Why adding more features does not guarantee improvement.
+20. How to compare ML experiments correctly.
+
+The project is **not complete simply because `model.fit()` runs successfully**.
+
+It is complete when I understand what the model-development process is doing and can reproduce the same process on a different dataset.
+
+---
+
+# 35. Foundation of the Project
+
+The foundation should remain:
+
+```text
+                 DATA
+                  │
+                  ▼
+          Understand the Dataset
+                  │
+                  ▼
+          Define X and y
+                  │
+                  ▼
+          Train/Test Split
+                  │
+                  ▼
+              Baseline
+                  │
+                  ▼
+         Linear Regression
+                  │
+                  ▼
+             Prediction
+                  │
+                  ▼
+             Evaluation
+                  │
+                  ▼
+           Error Analysis
+                  │
+                  ▼
+           Better Features
+                  │
+                  ▼
+           Better Model
+                  │
+                  ▼
+          Generalization
+```
+
+Everything else is secondary.
+
+---
+
+# 36. Important Requirements
+
+When helping me implement this project:
+
+1. Teach one major ML concept at a time.
+2. Explain **why** before showing implementation.
+3. Do not generate the entire completed project immediately.
+4. Give me small implementation exercises.
+5. Let me write important code myself where useful.
+6. Review and explain my code when I share it.
+7. Explicitly identify conceptual mistakes.
+8. Always establish a baseline before evaluating stronger models.
+9. Explain metrics in practical terms.
+10. Point out potential leakage.
+11. Prefer intuition before mathematics.
+12. Introduce mathematics gradually.
+13. Explain unfamiliar scikit-learn/pandas syntax.
+14. Ask me to think about expected results where that improves learning.
+15. Avoid infrastructure unrelated to the current ML concept.
+16. Do not optimize purely for the best model score.
+17. Prefer understanding model behavior and generalization.
+18. Keep experiments small and measurable.
+19. Clearly distinguish training performance from test performance.
+20. Connect new concepts to concepts already learned.
+
+# Final Recommended Direction
+
+Use:
+
+```text
+Dataset:
+California Housing
+
+Language:
+Python
+
+Data:
+pandas + NumPy
+
+ML:
+scikit-learn
+
+Visualization:
+matplotlib
+
+Exploration:
+Jupyter
+
+Baseline:
+DummyRegressor
+
+First model:
+LinearRegression
+
+Second model:
+RandomForestRegressor
+
+Primary metric:
+MAE
+
+Additional metrics:
+RMSE + R²
+
+Evaluation:
+Train/test split initially
+Cross-validation later
+
+Infrastructure:
+None initially
+```
+
+The first objective is simply:
+
+> **Load the California Housing dataset, understand what every column represents, identify X and y, and explain the data before writing any ML training code.**
+
+Only after that foundation is clear should the first baseline model be trained.
