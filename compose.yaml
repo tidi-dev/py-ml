@@ -1,0 +1,14 @@
+# Start Jupyter:   docker compose up --build
+# Run the tests:   docker compose run --rm lab pytest
+services:
+  lab:
+    build: .
+    image: house-price-lab
+    ports:
+      - "127.0.0.1:8888:8888"                  # Jupyter, reachable only from this computer
+    volumes:
+      - .:/app                                 # the project folder: your edits are saved on your machine
+      - sklearn-data:/data/scikit_learn_data   # the dataset, downloaded once and kept between runs
+
+volumes:
+  sklearn-data:

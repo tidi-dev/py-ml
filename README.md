@@ -34,7 +34,9 @@ real Python          what/why/how
 
 ## Start Here
 
-Follow this order:
+**New here? Read [`docs/how-to.md`](docs/how-to.md) first** (or its notebook version, [`course/how-to.ipynb`](course/how-to.ipynb)). It explains how the course works, how to do the exercises and checkpoints, and what to do when you're stuck.
+
+Then follow this order:
 
 1. Read [`docs/00-ml-big-picture.md`](docs/00-ml-big-picture.md): what ML is, with no code.
 2. Work through [`notebooks/01_exploration.ipynb`](notebooks/01_exploration.ipynb): look at the real data (setup below).
@@ -45,36 +47,47 @@ Follow this order:
 
 Keep the [glossary](docs/glossary.md) open while you read.
 
+> 📓 **Prefer notebooks?** Every chapter also exists as a Jupyter notebook in [`course/`](course/), with the same text split into sections and every Python example as a cell you can run. Open them in JupyterLab (see [Setup](#setup)) from the `course/` folder in the file browser. The Markdown files in `docs/` and the notebooks have the same content, so use whichever is easier to read.
+
 ---
 
 ## Setup
 
-You need Python 3.10 or newer. From the project folder:
+Everything runs in **Docker**. You don't install Python or any packages on your own computer. The only thing you need is Docker (e.g. [Docker Desktop](https://www.docker.com/products/docker-desktop/) or OrbStack), running.
+
+From the project folder:
 
 ```bash
-# 1. Create and activate a virtual environment (an isolated place for this project's packages)
-python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+# 1. Build the environment and start Jupyter (the first build takes a few minutes)
+docker compose up --build
 
-# 2. Install the project and its tools
-pip install -e ".[dev]"
+# 2. Open the link it prints, which looks like:
+#    http://127.0.0.1:8888/lab?token=...
+#    Then open notebooks/01_exploration.ipynb from the file browser on the left.
 
-# 3. Check everything works (the first run downloads the ~400 KB dataset)
-pytest
-
-# 4. Open the notebook
-jupyter lab notebooks/01_exploration.ipynb
+# 3. When you're done: press Ctrl+C in that terminal (or run: docker compose down)
 ```
 
-What these do:
+Other commands (run them in a second terminal, from the project folder):
 
-| Command | Purpose |
+```bash
+docker compose run --rm lab pytest                                   # run the tests
+docker compose run --rm lab python scripts/build_course_notebooks.py # rebuild course/ after editing docs/
+```
+
+What's going on:
+
+| Piece | Purpose |
 |---|---|
-| `pip install -e ".[dev]"` | Installs pandas, NumPy, scikit-learn, matplotlib (the project) and Jupyter + pytest (the tools). `-e` means "editable": changes to `src/` take effect immediately. |
+| `Dockerfile` | Describes the environment: Python 3.13 plus pandas, NumPy, scikit-learn, matplotlib, Jupyter and pytest, installed **inside the image**, not on your machine. |
+| `compose.yaml` | Starts that environment as a service called `lab`, with Jupyter on `127.0.0.1:8888` (reachable only from your computer). |
+| Project folder → `/app` | Your project folder is shared with the container, so notebooks you edit and code you write are saved **on your machine** as normal files. |
+| `sklearn-data` volume | The dataset (~400 KB) is downloaded the first time it's used and kept in a Docker volume, so it isn't downloaded again. |
 | `pytest` | Runs the tests in `tests/`, which check that the data loads and looks the way the course describes it. |
-| `jupyter lab` | Opens Jupyter in your browser. (`jupyter notebook` works too.) |
 
-The dataset is downloaded by scikit-learn into `~/scikit_learn_data` the first time it's used. Nothing needs to be committed to this repository.
+You only need to rebuild the image (`docker compose up --build` or `docker compose build`) if the dependencies in `pyproject.toml` change. Changes to `src/`, notebooks and docs take effect immediately.
+
+If the link doesn't work, run `docker compose logs lab` and look for the line starting with `http://127.0.0.1:8888/lab?token=`. If port 8888 is already in use, stop the other Jupyter, or change the first `8888` in `compose.yaml` to another number (e.g. `"127.0.0.1:8890:8888"`) and open that port instead.
 
 ---
 
@@ -102,19 +115,20 @@ Random Forest                               ← docs 08
 Complete ML workflow                        ← docs 09
 ```
 
-| # | Chapter | Status |
-|---|---|---|
-| 00 | [The Big Picture](docs/00-ml-big-picture.md) | ✅ current phase |
-| 01 | [Understanding the Data](docs/01-understanding-the-data.md) | ✅ current phase |
-| 02 | [Features and Target](docs/02-features-and-target.md) | ✅ current phase |
-| 03 | [Training and Testing](docs/03-training-and-testing.md) | 📍 roadmap |
-| 04 | [Your First Baseline Model](docs/04-first-baseline-model.md) | 📍 roadmap |
-| 05 | [Linear Regression](docs/05-linear-regression.md) | 📍 roadmap |
-| 06 | [Evaluating a Model](docs/06-evaluating-a-model.md) | 📍 roadmap |
-| 07 | [Overfitting and Generalization](docs/07-overfitting-and-generalization.md) | 📍 roadmap |
-| 08 | [Random Forest](docs/08-random-forest.md) | 📍 roadmap |
-| 09 | [The Complete ML Workflow](docs/09-ml-workflow.md) | 📍 roadmap |
-| — | [Glossary](docs/glossary.md) | reference |
+| # | Chapter (Markdown) | Notebook | Status |
+|---|---|---|---|
+| — | [How to Use This Course](docs/how-to.md) | [📓 open](course/how-to.ipynb) | 👉 start here |
+| 00 | [The Big Picture](docs/00-ml-big-picture.md) | [📓 open](course/00-ml-big-picture.ipynb) | ✅ current phase |
+| 01 | [Understanding the Data](docs/01-understanding-the-data.md) | [📓 open](course/01-understanding-the-data.ipynb) | ✅ current phase |
+| 02 | [Features and Target](docs/02-features-and-target.md) | [📓 open](course/02-features-and-target.ipynb) | ✅ current phase |
+| 03 | [Training and Testing](docs/03-training-and-testing.md) | [📓 open](course/03-training-and-testing.ipynb) | 📍 roadmap |
+| 04 | [Your First Baseline Model](docs/04-first-baseline-model.md) | [📓 open](course/04-first-baseline-model.ipynb) | 📍 roadmap |
+| 05 | [Linear Regression](docs/05-linear-regression.md) | [📓 open](course/05-linear-regression.ipynb) | 📍 roadmap |
+| 06 | [Evaluating a Model](docs/06-evaluating-a-model.md) | [📓 open](course/06-evaluating-a-model.ipynb) | 📍 roadmap |
+| 07 | [Overfitting and Generalization](docs/07-overfitting-and-generalization.md) | [📓 open](course/07-overfitting-and-generalization.ipynb) | 📍 roadmap |
+| 08 | [Random Forest](docs/08-random-forest.md) | [📓 open](course/08-random-forest.ipynb) | 📍 roadmap |
+| 09 | [The Complete ML Workflow](docs/09-ml-workflow.md) | [📓 open](course/09-ml-workflow.ipynb) | 📍 roadmap |
+| — | [Glossary](docs/glossary.md) | [📓 open](course/glossary.ipynb) | reference |
 
 **📍 Roadmap** chapters can be read now for orientation. Their exercises are meant for when you reach that milestone in the project.
 
@@ -134,7 +148,10 @@ Every chapter follows the same pattern: the problem → the idea in plain Englis
 │       └── data.py            # load_housing_data(), column names
 ├── tests/
 │   └── test_data.py           # checks the data matches what the course describes
-├── docs/                      # the ML course (00–09 + glossary)
+├── docs/                      # the ML course (00–09 + glossary), Markdown
+├── course/                    # the same course as runnable notebooks
+├── scripts/
+│   └── build_course_notebooks.py  # rebuilds course/ from docs/
 ├── pyproject.toml             # dependencies and project settings
 ├── brief.txt                  # project requirements and learning roadmap
 └── README.md                  # you are here
@@ -146,9 +163,9 @@ The code grows as you progress. Model training, evaluation and prediction code w
 
 ## Scope
 
-**In scope:** Python, pandas, NumPy, scikit-learn, matplotlib, Jupyter, pytest.
+**In scope:** Python, pandas, NumPy, scikit-learn, matplotlib, Jupyter, pytest, and Docker **only as the development environment** (so nothing is installed on your machine).
 
-**Deliberately out of scope for now:** web APIs (FastAPI/Flask), databases, Docker, cloud services, MLflow, XGBoost, TensorFlow/PyTorch, Airflow/Spark. The first goal is to correctly train, evaluate, understand and improve a model, not to deploy one.
+**Deliberately out of scope for now:** web APIs (FastAPI/Flask), databases, deploying models with Docker, cloud services, MLflow, XGBoost, TensorFlow/PyTorch, Airflow/Spark. The first goal is to correctly train, evaluate, understand and improve a model, not to deploy one.
 
 ---
 

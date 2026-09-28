@@ -14,7 +14,7 @@ dependencies = [
 
 [project.optional-dependencies]
 # Tools for exploring (Jupyter) and checking (pytest) the project.
-# Install everything with:  pip install -e ".[dev]"
+# Installed inside the Docker image (see Dockerfile); nothing is installed on the host.
 dev = [
     "jupyter>=1.1",
     "pytest>=8.0",

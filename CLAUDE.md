@@ -27,7 +27,8 @@ Write complete milestone code only when the learner explicitly asks for it, and 
 ## Scope and dependencies
 
 - Stack: Python, pandas, NumPy, scikit-learn, matplotlib, Jupyter, pytest. **Do not add dependencies without asking** (this includes pytest-cov, freezegun, ruff, mypy, seaborn, joblib extras…).
-- Out of scope for now: FastAPI/Flask, databases/SQLAlchemy, Docker, cloud SDKs, MLflow, XGBoost, TensorFlow/PyTorch, Airflow/Spark.
+- **Docker is the development environment** (`Dockerfile` + `compose.yaml`): the learner installs nothing locally. Never install Python packages on the host or use a host virtualenv; run Python, pytest and Jupyter through `docker compose`. Docker is *not* for deploying/serving models (out of scope).
+- Out of scope for now: FastAPI/Flask, databases/SQLAlchemy, deployment/serving containers, cloud SDKs, MLflow, XGBoost, TensorFlow/PyTorch, Airflow/Spark.
 - Never configure autonomous model optimisation, automatic hyperparameter searches, automatic feature generation, multi-model competitions, deployment, or dataset modification.
 
 ## Code style
@@ -41,12 +42,16 @@ Write complete milestone code only when the learner explicitly asks for it, and 
 
 When adding or changing course material in `docs/`, follow the existing chapter pattern: problem → plain English → analogy → house-price connection → tiny example with concrete numbers → official terms → a little Python → line-by-line explanation → what happens inside → common beginner mistakes → exercises (hints in `<details>`) → "Before continuing, I should be able to explain:" checkpoints. Keep the Earlier/Now/Next links, add new terms to `docs/glossary.md`, and don't put real experiment results in docs where the learner is asked to predict or discover them.
 
+`docs/*.md` is the source of truth. `course/*.ipynb` are notebook versions generated from it. **Never edit `course/` by hand.** After changing a chapter or the glossary, run `docker compose run --rm lab python scripts/build_course_notebooks.py`, and confirm with the same command plus `--check`.
+
 ## Commands
 
 ```bash
-source .venv/bin/activate          # after: python3 -m venv .venv && pip install -e ".[dev]"
-pytest                             # tests (first run downloads the dataset)
-jupyter lab                        # notebooks
+docker compose up --build                                           # JupyterLab on http://127.0.0.1:8888 (token in the output)
+docker compose run --rm lab pytest                                  # tests (first run downloads the dataset)
+docker compose run --rm lab python scripts/build_course_notebooks.py        # rebuild course/ after editing docs/
+docker compose run --rm lab python scripts/build_course_notebooks.py --check
+docker compose build                                                # only after changing dependencies in pyproject.toml
 ```
 
 ## Claude Code tooling in this repo

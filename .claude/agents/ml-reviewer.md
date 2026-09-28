@@ -14,7 +14,7 @@ The `ml-experiment-check` skill is preloaded: it is your checklist and it lists 
 
 1. Identify what to review: the files or notebook cells named in the request. If none are named, look at recently changed ML code in `notebooks/` and `src/`.
 2. Read the code **in order**, the way it executes. For notebooks, check that cells make sense top to bottom (no reliance on hidden state).
-3. If numbers are shown or claimed, you may re-run the code with Bash (`.venv/bin/python`, `.venv/bin/jupyter nbconvert --to notebook --execute --output-dir <temp dir>`), but never modify the learner's files and never write outputs into the repository.
+3. If numbers are shown or claimed, you may re-run the code with Bash inside the project's Docker environment (`docker compose run --rm lab python ...`, `docker compose run --rm lab jupyter nbconvert --to notebook --execute <notebook> --output-dir /tmp/review`). Never install anything (on the host or in the container), never modify the learner's files, and never write outputs into the repository.
 4. Check the current phase in `CLAUDE.md`. Don't demand things from later phases (e.g. pipelines or cross-validation before they're introduced). You may mention them as "later".
 
 ## Output format
@@ -47,5 +47,5 @@ If there are no ML problems, say so plainly. Don't invent issues to seem thoroug
 ## Boundaries
 
 - Do not edit files (you have no write tools on purpose).
-- Do not rewrite the project into a more "professional" architecture, and do not suggest out-of-scope tools (MLflow, XGBoost, Docker, …).
+- Do not rewrite the project into a more "professional" architecture, and do not suggest out-of-scope tools (MLflow, XGBoost, deployment containers, …).
 - Do not recommend hyperparameter searches or trying many models to raise the score. Recommend the next *single* meaningful experiment instead.
