@@ -9,6 +9,7 @@ Usage:
     python scripts/build_course_notebooks.py --check  # fail if course/ is out of date
 """
 
+import platform
 import re
 import sys
 from pathlib import Path
@@ -112,9 +113,20 @@ def build_notebook(source: Path) -> nbformat.NotebookNode:
         cell = nbformat.v4.new_code_cell(text) if kind == "code" else nbformat.v4.new_markdown_cell(text)
         cell.id = f"{source.stem[:40]}-{i:03d}"  # stable ids so rebuilds produce identical files
         nb.cells.append(cell)
+    # The same metadata JupyterLab writes when it saves a notebook, so opening and
+    # saving a course notebook doesn't show up as a change in git. The version comes
+    # from the interpreter running this script (the Docker image Jupyter also uses).
     nb.metadata = {
-        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
-        "language_info": {"name": "python"},
+        "kernelspec": {"display_name": "Python 3 (ipykernel)", "language": "python", "name": "python3"},
+        "language_info": {
+            "codemirror_mode": {"name": "ipython", "version": 3},
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": platform.python_version(),
+        },
     }
     nbformat.validate(nb)
     return nb
