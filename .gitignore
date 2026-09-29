@@ -16,8 +16,8 @@ venv/
 htmlcov/
 
 # --- Data and models ---
-# The California Housing dataset is downloaded by scikit-learn into
-# ~/scikit_learn_data, so no raw data needs to live in this repository.
+# The California Housing dataset is downloaded by scikit-learn into the
+# `sklearn-data` Docker volume, so no raw data needs to live in this repository.
 data/
 # Trained models are produced by code; they are not committed.
 models/*.joblib

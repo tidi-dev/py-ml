@@ -29,8 +29,9 @@ def load_housing_data() -> pd.DataFrame:
     The DataFrame has 20,640 rows (one per block group) and 9 columns:
     the 8 feature columns followed by the ``MedHouseVal`` target column.
 
-    The first call downloads the data (about 400 KB) and caches it in
-    ``~/scikit_learn_data``; later calls read the cached copy.
+    The first call downloads the data (about 400 KB) into scikit-learn's data
+    folder; later calls read the cached copy. In the Docker setup that folder
+    is the ``sklearn-data`` volume (``SCIKIT_LEARN_DATA=/data/scikit_learn_data``).
     """
     housing = fetch_california_housing(as_frame=True)
     return housing.frame

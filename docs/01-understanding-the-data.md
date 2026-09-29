@@ -164,7 +164,7 @@ df.isna().sum()
 
 ### `housing = fetch_california_housing(as_frame=True)`
 
-Downloads the dataset the first time (about 400 KB, cached in `~/scikit_learn_data`) and loads it. `as_frame=True` asks for pandas tables instead of plain NumPy arrays, so we get column names.
+Downloads the dataset the first time (about 400 KB) and loads it. In this project's Docker setup the download is kept in the `sklearn-data` Docker volume, so it only happens once. `as_frame=True` asks for pandas tables instead of plain NumPy arrays, so we get column names.
 
 `housing` is a *Bunch*: a scikit-learn container that works like a dictionary. It holds several things:
 
