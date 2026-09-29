@@ -16,7 +16,8 @@ The repository is two things at once: a small **ML project** you build step by s
 | `course/*.ipynb` | **The same chapters as Jupyter notebooks**, with every Python example as a runnable cell | Reading *and* trying the code |
 | `notebooks/` | The project's working notebooks. `01_exploration.ipynb` is where you first look at the real data | Doing the project |
 | `src/house_price/` | Reusable project code (for now, just the data loader) | Later milestones |
-| `tests/` | Checks that the project code works (`pytest`) | After changing `src/` |
+| `tests/` | Checks that the project code works (`docker compose run --rm lab pytest`) | After changing `src/` |
+| `Dockerfile` / `compose.yaml` | The Docker development environment: Python, the packages and JupyterLab, so nothing is installed on your computer | Starting a study session (`docker compose up`) |
 | `docs/glossary.md` / `course/glossary.ipynb` | Plain-English definitions of every ML term | Whenever a word feels fuzzy |
 | `README.md` | The front page and the chapter list | Finding your way |
 | `brief.txt` | The full project requirements and roadmap | For the big picture |

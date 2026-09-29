@@ -83,7 +83,7 @@ What's going on:
 | `compose.yaml` | Starts that environment as a service called `lab`, with Jupyter on `127.0.0.1:8888` (reachable only from your computer). |
 | Project folder → `/app` | Your project folder is shared with the container, so notebooks you edit and code you write are saved **on your machine** as normal files. |
 | `sklearn-data` volume | The dataset (~400 KB) is downloaded the first time it's used and kept in a Docker volume, so it isn't downloaded again. |
-| `pytest` | Runs the tests in `tests/`, which check that the data loads and looks the way the course describes it. |
+| `docker compose run --rm lab pytest` | Runs the tests in `tests/` inside the container. They check that the data loads and looks the way the course describes it. |
 
 You only need to rebuild the image (`docker compose up --build` or `docker compose build`) if the dependencies in `pyproject.toml` change. Changes to `src/`, notebooks and docs take effect immediately.
 
@@ -152,6 +152,9 @@ Every chapter follows the same pattern: the problem → the idea in plain Englis
 ├── course/                    # the same course as runnable notebooks
 ├── scripts/
 │   └── build_course_notebooks.py  # rebuilds course/ from docs/
+├── Dockerfile                 # the development environment (Python + packages, inside Docker)
+├── compose.yaml               # starts that environment: JupyterLab, tests, scripts
+├── .dockerignore              # keeps the Docker build small
 ├── pyproject.toml             # dependencies and project settings
 ├── brief.txt                  # project requirements and learning roadmap
 └── README.md                  # you are here
@@ -188,7 +191,7 @@ This repo includes a small [Claude Code](https://code.claude.com) setup designed
 claude plugin install superpowers@claude-plugins-official --scope project
 ```
 
-Suggested rhythm for each milestone: **ml-tutor** (understand) → you write the code → `pytest` → **ml-reviewer** (fix conceptual problems) → verify → continue.
+Suggested rhythm for each milestone: **ml-tutor** (understand) → you write the code → `docker compose run --rm lab pytest` → **ml-reviewer** (fix conceptual problems) → verify → continue.
 
 ---
 

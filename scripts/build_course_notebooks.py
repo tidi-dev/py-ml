@@ -4,9 +4,9 @@ The Markdown files in docs/ are the source of truth. This script turns each
 chapter into a Jupyter notebook: explanations become Markdown cells (one per
 section) and every ```python block becomes a runnable code cell.
 
-Usage:
-    python scripts/build_course_notebooks.py          # (re)build course/
-    python scripts/build_course_notebooks.py --check  # fail if course/ is out of date
+Usage (from the project folder, runs inside the Docker environment):
+    docker compose run --rm lab python scripts/build_course_notebooks.py          # (re)build course/
+    docker compose run --rm lab python scripts/build_course_notebooks.py --check  # fail if course/ is out of date
 """
 
 import platform
@@ -146,7 +146,10 @@ def main() -> int:
             target.write_text(content)
 
     if check_only and outdated:
-        print("Out of date (run scripts/build_course_notebooks.py):", ", ".join(outdated))
+        print(
+            "Out of date (run: docker compose run --rm lab python scripts/build_course_notebooks.py):",
+            ", ".join(outdated),
+        )
         return 1
     action = "Checked" if check_only else "Built"
     print(f"{action} {len(SOURCES)} notebooks in course/ ({len(outdated)} changed)")
