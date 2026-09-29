@@ -1,11 +1,15 @@
+# syntax=docker/dockerfile:1
 # Development environment for this course: Python, pandas, scikit-learn, matplotlib,
-# Jupyter and pytest all live inside this image. Nothing is installed on your machine.
+# JupyterLab and pytest all live inside this image. Nothing is installed on your machine.
 FROM python:3.13-slim
+
+# uv installs Python packages like pip, but downloads them in parallel and is much faster.
+COPY --from=ghcr.io/astral-sh/uv:0.12.20 /uv /usr/local/bin/uv
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    UV_LINK_MODE=copy \
+    UV_HTTP_TIMEOUT=120 \
     SCIKIT_LEARN_DATA=/data/scikit_learn_data
 
 # A regular (non-root) user, so files you create from Jupyter aren't owned by root.
@@ -15,11 +19,18 @@ RUN useradd --create-home --uid 1000 learner \
 
 WORKDIR /app
 
-# Install the project and its tools. Only the files pip needs are copied here;
-# the whole project folder is mounted over /app at run time (see compose.yaml).
-COPY pyproject.toml README.md ./
-COPY src ./src
-RUN pip install -e ".[dev]" && chown -R learner /app
+# Install the packages. This step depends ONLY on pyproject.toml, so editing docs,
+# notebooks or code never triggers a re-download; only changing dependencies does.
+# The real project folder is mounted over /app at run time (see compose.yaml), so
+# empty placeholders for README.md and the package are enough here.
+# The cache mount keeps downloaded packages between builds, so even a rebuild
+# doesn't download everything again.
+COPY pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    mkdir -p src/house_price \
+    && touch README.md src/house_price/__init__.py \
+    && uv pip install --system -e ".[dev]" \
+    && chown -R learner /app
 
 USER learner
 EXPOSE 8888

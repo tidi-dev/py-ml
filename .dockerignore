@@ -1,7 +1,4 @@
-# The image only needs what `pip install` uses; everything else is mounted at run time.
+# The image only needs pyproject.toml (to install the packages);
+# the whole project folder is mounted at run time (see compose.yaml).
 *
 !pyproject.toml
-!README.md
-!src/
-**/__pycache__
-**/*.egg-info

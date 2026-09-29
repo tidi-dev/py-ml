@@ -16,7 +16,7 @@ dependencies = [
 # Tools for exploring (Jupyter) and checking (pytest) the project.
 # Installed inside the Docker image (see Dockerfile); nothing is installed on the host.
 dev = [
-    "jupyter>=1.1",
+    "jupyterlab>=4.2",
     "pytest>=8.0",
 ]
 
